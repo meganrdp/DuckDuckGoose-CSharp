@@ -22,9 +22,14 @@ public class UserController : Controller
         _users = users;
     }
 
-    public IActionResult Index(
-        [FromQuery] GetUsersRequest request
-    )
+    [HttpGet("{userId}")]
+    public IActionResult UserPage([FromRoute] string userId, [FromQuery] int? page)
+    {
+        UserViewModel user = new UserViewModel(_users.GetUserById(userId), page.HasValue ? page.Value : 1, 5);
+        return View(user);
+    }
+    
+    public IActionResult Index([FromQuery] GetUsersRequest request)
     {
         ViewData["IsAuthenticated"] = false;
         var users = _users.GetUsers(request);
